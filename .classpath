@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry combineaccessrules="false" kind="src" path="/SwaggerParser"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/ant-1.7.0.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/ant-launcher-1.7.0.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/bsh-2.0b4.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/cal10n-api-0.7.4.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/commons-lang3-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/guava-18.0.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/guice-4.0-no_aop.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/httpclient-4.5.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/httpcore-4.4.1.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jackson-annotations-2.4.5.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jackson-core-2.6.0.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jackson-databind-2.4.5.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jackson-dataformat-yaml-2.4.5.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jackson-datatype-joda-2.4.5.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/javax.inject-1.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jcommander-1.48.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jetty-6.1.26.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jetty-util-6.1.26.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jmockit-1.19.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/joda-time-2.2.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jopt-simple-4.9.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/json-20090211.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/json-path-0.8.1.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/json-smart-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/jsonassert-1.2.3.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/servlet-api-2.5-20081211.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/slf4j-api-1.6.3.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/slf4j-ext-1.6.3.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/snakeyaml-1.15.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/swagger-annotations-1.5.8.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/swagger-core-1.5.8-tests.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/swagger-core-1.5.8.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/swagger-models-1.5.8.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/testng-6.9.6.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/validation-api-1.1.0.Final.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/wiremock-1.57.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/lib/xmlunit-1.6.jar"/>
+	<classpathentry kind="lib" path="/Users/banty01/Documents/workspace/SwaggerParser/target/swagger-parser-1.0.23-SNAPSHOT.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>
