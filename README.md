@@ -7,6 +7,7 @@ mvn install
 ```
 
 #Download the swagger-parser package
+here[https://github.com/swagger-api/swagger-parser]
 ```
 mvn install
 ```
