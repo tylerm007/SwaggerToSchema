@@ -6,6 +6,7 @@ public class Attribute {
 	private String generic_type = "string";
 	private int size = 20;
 	private boolean nullable = true;
+	private boolean autonum = false;
 
 	public String getName() {
 		return name;
@@ -37,6 +38,14 @@ public class Attribute {
 
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
+	}
+
+	public boolean isAutonum() {
+		return autonum;
+	}
+
+	public void setAutonum(boolean autonum) {
+		this.autonum = autonum;
 	}
 
 }

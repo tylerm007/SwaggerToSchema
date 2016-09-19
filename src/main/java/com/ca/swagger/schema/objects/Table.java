@@ -6,8 +6,8 @@ import java.util.List;
 public class Table {
 
 	private String entity;
+	private List<String> primaryKeyColumns = new ArrayList<String>();
 	private List<Attribute> columns = new ArrayList<Attribute>();
-	//private List<Relationship> children = new ArrayList<Relationship>();
 	private List<Relationship> parents = new ArrayList<Relationship>();
 
 	public String getEntity() {
@@ -50,7 +50,18 @@ public class Table {
 
 	public void addParents(Relationship reln) {
 		this.parents.add(reln);
+	}
+	
+	public void addPrimaryKeyColumns(String columnName) {
+		this.primaryKeyColumns.add(columnName);
+	}
 
+	public List<String> getPrimaryKeyColumns() {
+		return primaryKeyColumns;
+	}
+
+	public void setPrimaryKeyColumns(List<String> primaryKeyColumns) {
+		this.primaryKeyColumns = primaryKeyColumns;
 	}
 
 }

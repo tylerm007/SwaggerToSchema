@@ -23,7 +23,7 @@ public class SwaggerToSchema {
 	public static int defaultStringSize = 20;
 
 	public static void main(String[] args) {
-		test();
+		//test();
 		if (args.length > 0) {
 			System.out.println(args[0]);
 			System.out.println(generateSchema(args[0], true));
@@ -60,11 +60,11 @@ public class SwaggerToSchema {
 			Map<String, Property> prop = m.getProperties();
 			if (prop != null) {
 				if (myPathList.contains(entityKey) || genericSwagger) {
-					//System.out.println("Table: {\"entity\": " + entityKey + "}");
 					Table table = new Table();
 					table.setEntity(entityKey);
 					schema.getTables().add(table);
 					List<Attribute> columns = table.getColumns();
+					columns.add(createIdentColumn());
 					for (String propKey : prop.keySet()) {
 						Property p = prop.get(propKey);
 						String type = getGenericType(p);
@@ -78,7 +78,6 @@ public class SwaggerToSchema {
 							lookupTable.put(propKey, entityKey);
 						}
 						else {
-							//System.out.println("Attribute: {\"name\": " + propKey + ", generic_type: " + type + ", nullable: " + (!p.getRequired()) + ", size: 20}");
 							attr.setName(propKey);
 							attr.setGeneric_type(type);
 							attr.setNullable((!p.getRequired()));
@@ -86,7 +85,9 @@ public class SwaggerToSchema {
 							columns.add(attr);
 						}
 					}
+
 					table.setColumns(columns);
+					table.addPrimaryKeyColumns("ident");
 				}
 			}
 
@@ -95,18 +96,18 @@ public class SwaggerToSchema {
 		for (String property : lookupTable.keySet()) {
 			Relationship reln;
 			Table table = new Table();
+			table.addPrimaryKeyColumns("ident");
+			table.getColumns().add(createIdentColumn());
 			table.setEntity(RELN_CHILD_PREFIX + property);
 
 			Attribute attr = new Attribute();
 			String origTable = lookupTable.get(property);
-			//System.out.println("Table: {\"entity\": " + property + "}");
-			//System.out.println("Attribute: {\"name\": " + property + ", generic_type: " + "string" + ", nullable: " + "false" + ", size: 20}");
-			//System.out.println("Relationship to: " + origTable + " attribute[ " + property + "]");
 			attr.setName(property + "_ident");
 			attr.setGeneric_type("int");
 			attr.setNullable(false);
-			attr.setSize(defaultStringSize);
+			attr.setSize(0);
 			table.getColumns().add(attr);
+			
 			schema.getTables().add(table);
 			reln = new Relationship();
 			reln.setRelationship_name("has_" + property);
@@ -114,6 +115,7 @@ public class SwaggerToSchema {
 			reln.addChild_column_names(property + "_ident");
 			reln.addParent_column_names("ident");
 			table.addParents(reln);
+			
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		String outJson = null;
@@ -170,5 +172,15 @@ public class SwaggerToSchema {
 			}
 		}
 		return myPathList;
+	}
+
+	private static Attribute createIdentColumn() {
+		Attribute attr = new Attribute();
+		attr.setName("ident");
+		attr.setGeneric_type("int");
+		attr.setNullable(false);
+		attr.setSize(0);
+		attr.setAutonum(true);
+		return attr;
 	}
 }
