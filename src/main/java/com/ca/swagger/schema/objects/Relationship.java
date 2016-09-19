@@ -11,8 +11,8 @@ public class Relationship {
 	private String relationship_name;
 	private String parent_entity;
 	private String child_entity;
-	private List<String> parent_column_names = new ArrayList<String>();
-	private List<String> child_column_names = new ArrayList<String>();
+	private List<String> parent_column_names = new ArrayList<>();
+	private List<String> child_column_names = new ArrayList<>();
 
 	public String getRelationship_name() {
 		return relationship_name;

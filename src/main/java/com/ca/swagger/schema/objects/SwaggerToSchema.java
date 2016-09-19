@@ -23,10 +23,10 @@ public class SwaggerToSchema {
 	public static int defaultStringSize = 20;
 
 	public static void main(String[] args) {
-		//test();
+		test();
 		if (args.length > 0) {
 			System.out.println(args[0]);
-			System.out.println(generateSchema(args[0], true));
+			//System.out.println(generateSchema(args[0], true));
 		}
 		else {
 			System.out.println("You must pass a Swagger 2.0 endpoint or a Swagger JSON file");
@@ -36,10 +36,10 @@ public class SwaggerToSchema {
 
 	private static void test() {
 		//... does not work ....generateSchema("http://liveapi.dreamfactory.com/df-swagger-ui/dist/index.html",false);
-		generateSchema("http://petstore.swagger.io/v2/swagger.json", true);
+		//generateSchema("http://petstore.swagger.io/v2/swagger.json", true);
 		//generateSchema("https://dev.expressologic.com/rest/default/demo_mysql/v1/@docs");
 		//generateSchema("https://dev.expressologic.com/rest/default/demo/v1/@docs");
-		//generateSchema("http://localhost:8080/APIServer/rest/default/banking/v1/@docs");
+		generateSchema("http://localhost:8080/APIServer/rest/default/banking/v1/@docs");
 		//generateSchema("uber.json", true);
 		//generateSchema("http://54.171.250.144/api-docs/customerManagementSwagger.json ",true);
 		//generateSchema("//Users/banty01/swagger.json",true);
@@ -61,10 +61,14 @@ public class SwaggerToSchema {
 			if (prop != null) {
 				if (myPathList.contains(entityKey) || genericSwagger) {
 					Table table = new Table();
+					Key key = new Key();
+					table.addKey(key);
+					key.addColumn("ident");
 					table.setEntity(entityKey);
 					schema.getTables().add(table);
 					List<Attribute> columns = table.getColumns();
 					columns.add(createIdentColumn());
+					String subtype = null;
 					for (String propKey : prop.keySet()) {
 						Property p = prop.get(propKey);
 						String type = getGenericType(p);
@@ -82,6 +86,10 @@ public class SwaggerToSchema {
 							attr.setGeneric_type(type);
 							attr.setNullable((!p.getRequired()));
 							attr.setSize(defaultStringSize);
+							subtype = genSubType(type);
+							if(subtype != null){
+								attr.setSubtype(subtype);
+							}
 							columns.add(attr);
 						}
 					}
@@ -96,6 +104,9 @@ public class SwaggerToSchema {
 		for (String property : lookupTable.keySet()) {
 			Relationship reln;
 			Table table = new Table();
+			Key key = new Key();
+			table.addKey(key);
+			key.addColumn("ident");
 			table.addPrimaryKeyColumns("ident");
 			table.getColumns().add(createIdentColumn());
 			table.setEntity(RELN_CHILD_PREFIX + property);
@@ -131,12 +142,18 @@ public class SwaggerToSchema {
 		return outJson;
 	}
 
+	private static String genSubType(String type) {
+		if("number".equals(type))
+			return "integer";
+		return null;
+	}
+
 	private static String getGenericType(Property p) {
 		String type = p.getType();
 		String format = p.getFormat();
 		if (format != null) {
 			if (format.contains("int")) {
-				type = "int";
+				type = "number";
 			}
 			else {
 				if (format.contains("double")) {
@@ -177,9 +194,10 @@ public class SwaggerToSchema {
 	private static Attribute createIdentColumn() {
 		Attribute attr = new Attribute();
 		attr.setName("ident");
-		attr.setGeneric_type("int");
+		attr.setGeneric_type("number");
+		attr.setSubtype("integer");
 		attr.setNullable(false);
-		attr.setSize(0);
+		attr.setSize(null);
 		attr.setAutonum(true);
 		return attr;
 	}

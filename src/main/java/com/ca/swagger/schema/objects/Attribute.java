@@ -4,9 +4,10 @@ public class Attribute {
 
 	private String name;
 	private String generic_type = "string";
-	private int size = 20;
+	private String subtype = null;
+	private Integer size = null;
 	private boolean nullable = true;
-	private boolean autonum = false;
+	private Boolean autonum = null;
 
 	public String getName() {
 		return name;
@@ -24,11 +25,11 @@ public class Attribute {
 		this.generic_type = generic_type;
 	}
 
-	public int getSize() {
+	public Integer getSize() {
 		return size;
 	}
 
-	public void setSize(int size) {
+	public void setSize(Integer size) {
 		this.size = size;
 	}
 
@@ -40,12 +41,24 @@ public class Attribute {
 		this.nullable = nullable;
 	}
 
-	public boolean isAutonum() {
+	public Boolean isAutonum() {
 		return autonum;
 	}
 
-	public void setAutonum(boolean autonum) {
+	public void setAutonum(Boolean autonum) {
 		this.autonum = autonum;
+	}
+
+	public String getSubtype() {
+		return subtype;
+	}
+
+	public void setSubtype(String subtype) {
+		this.subtype = subtype;
+	}
+
+	public Boolean getAutonum() {
+		return autonum;
 	}
 
 }
