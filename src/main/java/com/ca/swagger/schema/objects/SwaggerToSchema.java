@@ -1,5 +1,8 @@
 package com.ca.swagger.schema.objects;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,38 +21,55 @@ import io.swagger.parser.SwaggerParser;
 
 public class SwaggerToSchema {
 
-	private static final String RELN_PARENT_PREFIX = "PARENT_";
 	private static final String RELN_CHILD_PREFIX = "CHILD_";
 	public static int defaultStringSize = 20;
 
 	public static void main(String[] args) {
-		//test();
-		if (args.length > 0) {
-			System.out.println(args[0]);
-			System.out.println(generateSchema(args[0], true));
+		SwaggerToSchema s2schema = new SwaggerToSchema();
+		s2schema.test();
+		String fileName = null;
+		if (args.length >= 1) {
+			if (args.length >= 2) {
+				fileName = args[1];
+			}
+			try {
+				String contents = s2schema.generateSchema(args[0], true);
+				s2schema.writeToFile(fileName, contents);
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		else {
-			System.out.println("You must pass a Swagger 2.0 endpoint or a Swagger JSON file");
-			System.out.println("SwaggerToSchema [dir/fileName | http:// endpoint].");
+			System.out.println("You must pass a Swagger 2.0 endpoint or a Swagger JSON file and optional fileName");
+			System.out.println("SwaggerToSchema [dir/fileName | http:// endpoint] [directory/filename.json]");
 		}
 	}
 
-	private static void test() {
+	private void test() {
 		//... does not work ....generateSchema("http://liveapi.dreamfactory.com/df-swagger-ui/dist/index.html",false);
 		//generateSchema("http://petstore.swagger.io/v2/swagger.json", true);
 		//generateSchema("https://dev.expressologic.com/rest/default/demo_mysql/v1/@docs");
 		//generateSchema("https://dev.expressologic.com/rest/default/demo/v1/@docs");
 		//generateSchema("http://localhost:8080/APIServer/rest/default/banking/v1/@docs");
-		generateSchema("uber.json", true);
+		//generateSchema("uber.json", true);
 		//generateSchema("http://54.171.250.144/api-docs/customerManagementSwagger.json ",true);
 		//generateSchema("//Users/banty01/swagger.json",true);
+		String content = generateSchema("http://devdocs.magento.com/swagger/schemas/latest-2.1.schema.json", true);
+		try {
+			this.writeToFile("test.json", content);
+		}
+		catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public static String generateSchema(String swaggerDoc) {
+	public String generateSchema(String swaggerDoc) {
 		return generateSchema(swaggerDoc, false);
 	}
 
-	public static String generateSchema(String swaggerDoc, boolean genericSwagger) {
+	public String generateSchema(String swaggerDoc, boolean genericSwagger) {
 		Map<String, String> lookupTable = new HashMap<String, String>();
 		Schema schema = new Schema();
 		Swagger swagger = new SwaggerParser().read(swaggerDoc);
@@ -74,7 +94,7 @@ public class SwaggerToSchema {
 						String type = getGenericType(p);
 						Attribute attr = new Attribute();
 						if (p.getType().equalsIgnoreCase("Array") || p.getType().equalsIgnoreCase("Ref")) {
-							type = "string";
+							type = "number";
 							if (propKey.equalsIgnoreCase(entityKey)) {
 								propKey = entityKey;
 							}
@@ -85,9 +105,10 @@ public class SwaggerToSchema {
 							attr.setName(propKey);
 							attr.setGeneric_type(type);
 							attr.setNullable((!p.getRequired()));
-							attr.setSize(defaultStringSize);
+							if (type.equals("string"))
+								attr.setSize(defaultStringSize);
 							subtype = genSubType(type);
-							if(subtype != null){
+							if (subtype != null) {
 								attr.setSubtype(subtype);
 							}
 							columns.add(attr);
@@ -98,7 +119,6 @@ public class SwaggerToSchema {
 					table.addPrimaryKeyColumns("ident");
 				}
 			}
-
 		}
 
 		for (String property : lookupTable.keySet()) {
@@ -114,11 +134,12 @@ public class SwaggerToSchema {
 			Attribute attr = new Attribute();
 			String origTable = lookupTable.get(property);
 			attr.setName(property + "_ident");
-			attr.setGeneric_type("int");
+			attr.setGeneric_type("number");
+			attr.setSubtype("integer");
 			attr.setNullable(false);
-			attr.setSize(0);
+			attr.setSize(null);
 			table.getColumns().add(attr);
-			
+
 			schema.getTables().add(table);
 			reln = new Relationship();
 			reln.setRelationship_name("has_" + property);
@@ -126,7 +147,7 @@ public class SwaggerToSchema {
 			reln.addChild_column_names(property + "_ident");
 			reln.addParent_column_names("ident");
 			table.addParents(reln);
-			
+
 		}
 		ObjectMapper mapper = new ObjectMapper();
 		String outJson = null;
@@ -142,13 +163,13 @@ public class SwaggerToSchema {
 		return outJson;
 	}
 
-	private static String genSubType(String type) {
-		if("number".equals(type))
+	private String genSubType(String type) {
+		if ("number".equals(type))
 			return "integer";
 		return null;
 	}
 
-	private static String getGenericType(Property p) {
+	private String getGenericType(Property p) {
 		String type = p.getType();
 		String format = p.getFormat();
 		if (format != null) {
@@ -169,7 +190,7 @@ public class SwaggerToSchema {
 		return type;
 	}
 
-	private static List<String> getValidPathList(Swagger swagger) {
+	private List<String> getValidPathList(Swagger swagger) {
 		List<String> myPathList = new ArrayList<String>();
 		List<Tag> myTags = swagger.getTags();
 		if (myTags == null)
@@ -182,7 +203,6 @@ public class SwaggerToSchema {
 				if ((p.getGet() != null & p.getPost() != null) || pathKey.contains(tname)) {
 					//System.out.println("Path " + pathKey);
 					String key = pathKey.substring(1, pathKey.length());
-					String[] split = (key + "/").split("/");
 					if (!myPathList.contains(tname))
 						myPathList.add(tname);
 				}
@@ -191,7 +211,32 @@ public class SwaggerToSchema {
 		return myPathList;
 	}
 
-	private static Attribute createIdentColumn() {
+	private void writeToFile(String fileName, String content) throws Exception {
+		//TODO
+		if (fileName == null) {
+			System.out.println(content);
+
+		}
+		else {
+			//write to fileName
+			File file = new File(fileName);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			if (file.canWrite()) {
+				FileWriter fw = new FileWriter(file.getAbsoluteFile());
+				BufferedWriter bw = new BufferedWriter(fw);
+				bw.write(content);
+				bw.close();
+				System.out.println("Schema file written to: " + fileName);
+			}
+			else {
+				throw new Exception("Cannot write to file " + fileName);
+			}
+		}
+	}
+
+	private Attribute createIdentColumn() {
 		Attribute attr = new Attribute();
 		attr.setName("ident");
 		attr.setGeneric_type("number");

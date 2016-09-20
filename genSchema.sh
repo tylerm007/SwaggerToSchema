@@ -3,7 +3,7 @@ export EL_SETUP=target
 export EL_JAVA=${EL_SETUP}/lib
 export EL_CLASSPATH=\
 ${EL_SETUP}:\
-lib/SwaggerConverter.jar:\
+${EL_SETUP}/SwaggerConverter-0.0.1-SNAPSHOT.jar:\
 ${EL_JAVA}/ant-1.7.0.jar:\
 ${EL_JAVA}/ant-launcher-1.7.0.jar:\
 ${EL_JAVA}/aopalliance-1.0.jar:\
@@ -39,14 +39,13 @@ ${EL_JAVA}/slf4j-api-1.6.3.jar:\
 ${EL_JAVA}/slf4j-ext-1.6.3.jar:\
 ${EL_JAVA}/snakeyaml-1.15.jar:\
 ${EL_JAVA}/swagger-annotations-1.5.8.jar:\
-${EL_JAVA}/swagger-core-1.5.8-tests.jar:\
 ${EL_JAVA}/swagger-core-1.5.8.jar:\
 ${EL_JAVA}/swagger-models-1.5.8.jar:\
 ${EL_JAVA}/testng-6.9.6.jar:\
 ${EL_JAVA}/validation-api-1.1.0.Final.jar:\
 ${EL_JAVA}/wiremock-1.57.jar:\
 ${EL_JAVA}/xmlunit-1.6.jar:\
-target/swagger-parser-1.0.23-SNAPSHOT.jar
-echo ${EL_CLASSPATH}
-//java -cp ${EL_CLASSPATH} com.ca.swagger.schema.objects.SwaggerToSchema /Users/banty01/Documents/workspace/SwaggerParser/uber.json
-java -cp ${EL_CLASSPATH} com.ca.swagger.schema.objects.SwaggerToSchema http://petstore.swagger.io/v2/swagger.json
+${EL_JAVA}/swagger-parser-1.0.22.jar
+#echo ${EL_CLASSPATH}
+#java -cp ${EL_CLASSPATH} com.ca.swagger.schema.objects.SwaggerToSchema /Users/banty01/Documents/workspace/SwaggerParser/uber.json
+java -cp ${EL_CLASSPATH} com.ca.swagger.schema.objects.SwaggerToSchema $1 $2
