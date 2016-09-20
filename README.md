@@ -1,30 +1,31 @@
 # SwaggerToSchema
-Use your swagger URL or local file and create to LAC Schema 
+Use your swagger URL or a local file and create to LAC Schema file which can be used to POST and create data models.
 
 #Download this package
 ```
 mvn install
 ```
 
-#Download the swagger-parser package
-here[https://github.com/swagger-api/swagger-parser]
-```
-mvn install
-```
-
-Copy the JAR file from SwaggerToSchema\target\SwaggerConverter.jar 
-to the swagger-parser\target 
-
-Copy the command file from SwaggerToSchema\genSchema.sh 
-to swagger-parser
 
 ##To Run 
 pass an argument for an swagger file or an http location
 
+###Use a URL endpoint
 ```
 sh genSchema.sh http://petstore.swagger.io/v2/swagger.json
-OR
+```
+###Pass a file in Swagger 2.0 format
+```
 sh genSchema.sh uber.json
 ```
-
-The output is in CA Live API Creator @schema format - this can be used to create a new data model 
+###save the output to a file
+```
+sh genSchema.sh uber.json uberSchemaModel.json
+```
+##Command Line Schema Creation
+The output is in CA Live API Creator @schema format - this can be used to create a new data model using the Live API Creator admin command line utility (NodeJS) - you can be a list of project idents (lacadmin project list) and you need to have a prefix of a managed data source (e.g. schema is editable) - (lacadmin datasource list).
+```
+lacadmin login -u [adminuser] -p [password] http://localhost:8080 -a schema
+lacadmin use schema
+lacadmin schema create --prefix [prefix] --project_ident [ident] --file uberSchemaModel.json
+```
