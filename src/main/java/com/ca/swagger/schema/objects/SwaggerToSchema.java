@@ -23,10 +23,10 @@ public class SwaggerToSchema {
 	public static int defaultStringSize = 20;
 
 	public static void main(String[] args) {
-		test();
+		//test();
 		if (args.length > 0) {
 			System.out.println(args[0]);
-			//System.out.println(generateSchema(args[0], true));
+			System.out.println(generateSchema(args[0], true));
 		}
 		else {
 			System.out.println("You must pass a Swagger 2.0 endpoint or a Swagger JSON file");
@@ -39,8 +39,8 @@ public class SwaggerToSchema {
 		//generateSchema("http://petstore.swagger.io/v2/swagger.json", true);
 		//generateSchema("https://dev.expressologic.com/rest/default/demo_mysql/v1/@docs");
 		//generateSchema("https://dev.expressologic.com/rest/default/demo/v1/@docs");
-		generateSchema("http://localhost:8080/APIServer/rest/default/banking/v1/@docs");
-		//generateSchema("uber.json", true);
+		//generateSchema("http://localhost:8080/APIServer/rest/default/banking/v1/@docs");
+		generateSchema("uber.json", true);
 		//generateSchema("http://54.171.250.144/api-docs/customerManagementSwagger.json ",true);
 		//generateSchema("//Users/banty01/swagger.json",true);
 	}
