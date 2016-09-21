@@ -26,15 +26,18 @@ public class SwaggerToSchema {
 
 	public static void main(String[] args) {
 		SwaggerToSchema s2schema = new SwaggerToSchema();
-		s2schema.test();
+		//s2schema.test();
 		String fileName = null;
 		if (args.length >= 1) {
 			if (args.length >= 2) {
+				//System.out.println("arg0 "+args[0]);
+				//System.out.println("arg1 "+args[1]);
 				fileName = args[1];
 			}
 			try {
 				String contents = s2schema.generateSchema(args[0], true);
 				s2schema.writeToFile(fileName, contents);
+				//System.out.println("arg0 "+args[0]);
 			}
 			catch (Exception e) {
 				e.printStackTrace();
