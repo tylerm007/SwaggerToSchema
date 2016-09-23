@@ -143,7 +143,7 @@ public class SwaggerToSchema {
 			e.printStackTrace();
 			outJson = "{\"error\":\"" + e.getMessage() + "\"}";
 		}
-		System.out.println(outJson);
+		//System.out.println(outJson);
 		return outJson;
 	}
 
@@ -198,8 +198,7 @@ public class SwaggerToSchema {
 	private void writeToFile(String fileName, String content) throws Exception {
 		//TODO
 		if (fileName == null) {
-			System.out.println(content);
-
+			//System.out.println(content);
 		}
 		else {
 			//write to fileName
