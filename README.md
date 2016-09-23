@@ -1,7 +1,16 @@
 # SwaggerToSchema
 Use your swagger URL or a local file and create to LAC Schema file which can be used to POST and create data models.
 
-#Download this package
+#Clone this repository to a directory on your system.
+```
+git clone https://github.com/tylerm007/SwaggerToSchema.git ~/SwaggerToSchema
+
+Change directory.
+
+cd ~/SwaggerToSchema
+```
+
+#Install this package
 ```
 mvn install
 ```
