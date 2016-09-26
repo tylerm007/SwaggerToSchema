@@ -17,7 +17,7 @@ mvn install
 
 
 ##To Run 
-pass an argument for an swagger file or an http location
+pass an argument for a swagger file or an http location
 
 ###Use a URL endpoint
 ```
