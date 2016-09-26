@@ -84,7 +84,7 @@ The output is a format can used by CA Live API Creator to create a new database 
 ```
 
 ##Command Line Schema Creation
-The output is in CA Live API Creator @schema format - this can be used to create a new data model using the Live API Creator admin command line utility (NodeJS) - you can be a list of project idents (lacadmin project list) and you need to have a prefix of a managed data source (e.g. schema is editable) - (lacadmin datasource list).
+The output is in CA Live API Creator @schema format - this can be used to create a new data model using the Live API Creator admin command line utility (NodeJS) - you can get a list of project idents (lacadmin project list) and you need to have a prefix of a managed data source (e.g. schema is editable) - (lacadmin datasource list).
 ```
 lacadmin login -u [adminuser] -p [password] http://localhost:8080 -a schema
 lacadmin use schema
