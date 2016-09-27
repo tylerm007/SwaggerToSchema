@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Key {
 
-	private String name = "PRIMARY";
+	private String name = null;
 	private String  type = "primary";
 	private List<String> columns = new ArrayList<>();
 	public String getName() {
