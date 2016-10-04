@@ -85,18 +85,18 @@ public class SwaggerToSchema {
 							//should be primary key of parent table
 							lookupTable.put(propKey, entityKey);
 						}
-						else {
-							attr.setName(propKey);
-							attr.setGeneric_type(type);
-							attr.setNullable((!p.getRequired()));
-							if (type.equals("string"))
-								attr.setSize(defaultStringSize);
-							subtype = genSubType(type);
-							if (subtype != null) {
-								attr.setSubtype(subtype);
-							}
-							columns.add(attr);
+						//else {
+						attr.setName(propKey);
+						attr.setGeneric_type(type);
+						attr.setNullable((!p.getRequired()));
+						if (type.equals("string"))
+							attr.setSize(defaultStringSize);
+						subtype = genSubType(type);
+						if (subtype != null) {
+							attr.setSubtype(subtype);
 						}
+						columns.add(attr);
+						//}
 					}
 
 					table.setColumns(columns);
@@ -114,7 +114,14 @@ public class SwaggerToSchema {
 			table.addPrimaryKeyColumns("ident");
 			table.getColumns().add(createIdentColumn());
 			table.setEntity(RELN_CHILD_PREFIX + property);
-
+			boolean isNewTable = true;
+			for (Table atable : schema.getTables()) {
+				if (atable.getEntity().equalsIgnoreCase(property)) {
+					table = atable;
+					isNewTable = false;
+					break;
+				}
+			}
 			Attribute attr = new Attribute();
 			String origTable = lookupTable.get(property);
 			attr.setName(property + "_ident");
@@ -124,7 +131,7 @@ public class SwaggerToSchema {
 			attr.setSize(null);
 			table.getColumns().add(attr);
 
-			schema.getTables().add(table);
+			if(isNewTable) schema.getTables().add(table);
 			reln = new Relationship();
 			reln.setRelationship_name("has_" + property);
 			reln.setParent_entity(origTable);
@@ -195,7 +202,7 @@ public class SwaggerToSchema {
 		return myPathList;
 	}
 
-	private void writeToFile(String fileName, String content) throws Exception {
+	public void writeToFile(String fileName, String content) throws Exception {
 		//TODO
 		if (fileName == null) {
 			//System.out.println(content);
