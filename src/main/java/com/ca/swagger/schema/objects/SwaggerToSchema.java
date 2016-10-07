@@ -17,11 +17,13 @@ import io.swagger.models.Path;
 import io.swagger.models.Swagger;
 import io.swagger.models.Tag;
 import io.swagger.models.properties.Property;
+import io.swagger.models.properties.RefProperty;
 import io.swagger.parser.SwaggerParser;
 
 public class SwaggerToSchema {
 
 	private static final String RELN_CHILD_PREFIX = "CHILD_";
+	private static final String RELN_PARENT_PREFIX = "PARENT_";
 	public static int defaultStringSize = 20;
 
 	public static void main(String[] args) {
@@ -54,7 +56,7 @@ public class SwaggerToSchema {
 	}
 
 	public String generateSchema(String swaggerDoc, boolean genericSwagger) {
-		Map<String, String> lookupTable = new HashMap<String, String>();
+		List<LookupTable> lookupTable = new ArrayList<>();
 		Schema schema = new Schema();
 		Swagger swagger = new SwaggerParser().read(swaggerDoc);
 		List<String> myPathList = getValidPathList(swagger);
@@ -79,24 +81,29 @@ public class SwaggerToSchema {
 						Attribute attr = new Attribute();
 						if (p.getType().equalsIgnoreCase("Array") || p.getType().equalsIgnoreCase("Ref")) {
 							type = "number";
-							if (propKey.equalsIgnoreCase(entityKey)) {
-								propKey = entityKey;
-							}
 							//should be primary key of parent table
-							lookupTable.put(propKey, entityKey);
+							String refEntity = propKey;
+							if (p.getType().equalsIgnoreCase("Ref")) {
+								if (p instanceof RefProperty) {
+									refEntity = ((RefProperty)p).getSimpleRef();
+								}
+							}
+							LookupTable lookup = new LookupTable(entityKey, refEntity, propKey);
+							lookup.setRefArray(p.getType());
+							lookupTable.add(lookup);
 						}
-						//else {
-						attr.setName(propKey);
-						attr.setGeneric_type(type);
-						attr.setNullable((!p.getRequired()));
-						if (type.equals("string"))
-							attr.setSize(defaultStringSize);
-						subtype = genSubType(type);
-						if (subtype != null) {
-							attr.setSubtype(subtype);
+						else {
+							attr.setName(propKey);
+							attr.setGeneric_type(type);
+							attr.setNullable((!p.getRequired()));
+							if (type.equals("string"))
+								attr.setSize(defaultStringSize);
+							subtype = genSubType(type);
+							if (subtype != null) {
+								attr.setSubtype(subtype);
+							}
+							columns.add(attr);
 						}
-						columns.add(attr);
-						//}
 					}
 
 					table.setColumns(columns);
@@ -105,39 +112,53 @@ public class SwaggerToSchema {
 			}
 		}
 
-		for (String property : lookupTable.keySet()) {
+		for (LookupTable lookup : lookupTable) {
 			Relationship reln;
-			Table table = new Table();
-			Key key = new Key();
-			table.addKey(key);
-			key.addColumn("ident");
-			table.addPrimaryKeyColumns("ident");
-			table.getColumns().add(createIdentColumn());
-			table.setEntity(RELN_CHILD_PREFIX + property);
-			boolean isNewTable = true;
-			for (Table atable : schema.getTables()) {
-				if (atable.getEntity().equalsIgnoreCase(property)) {
-					table = atable;
-					isNewTable = false;
-					break;
-				}
+			Table childTable;
+			Table parentTable;
+			List<Table> listOfTables = schema.getTables();
+			//ref type is a parent pick - Array is a child list
+			boolean isRefType = lookup.getRefArray().equalsIgnoreCase("Ref");
+			String baseEntity = lookup.getBaseEntity();
+			String refEntity = lookup.getRefEntity();
+			String parentTableName;
+			String columnName = lookup.getColumnName();
+			if (isRefType) {
+				childTable = findTable(listOfTables, baseEntity);
+				parentTable = findTable(listOfTables, refEntity);
+				parentTableName = refEntity;
+			} else {
+				childTable = findTable(listOfTables, refEntity);
+				parentTable = findTable(listOfTables, baseEntity);
+				parentTableName = baseEntity;
 			}
-			Attribute attr = new Attribute();
-			String origTable = lookupTable.get(property);
-			attr.setName(property + "_ident");
-			attr.setGeneric_type("number");
-			attr.setSubtype("integer");
-			attr.setNullable(false);
-			attr.setSize(null);
-			table.getColumns().add(attr);
 
-			if(isNewTable) schema.getTables().add(table);
+			if (childTable == null) {
+				childTable = new Table();
+				schema.getTables().add(childTable);
+				Key key = new Key();
+				childTable.addKey(key);
+				key.addColumn("ident");
+				childTable.addPrimaryKeyColumns("ident");
+				childTable.getColumns().add(createIdentColumn());
+				childTable.setEntity(RELN_CHILD_PREFIX + columnName);
+			}
+			//add the attribute t the table
+			Attribute attr = new Attribute();
+			attr.setName(columnName);
+			attr.setGeneric_type("string");
+			//attr.setSubtype("integer");
+			attr.setNullable(false);
+			attr.setSize(20);
+			childTable.getColumns().add(attr);
+
+			//create the relationship to the child
 			reln = new Relationship();
-			reln.setRelationship_name("has_" + property);
-			reln.setParent_entity(origTable);
-			reln.addChild_column_names(property + "_ident");
+			reln.setRelationship_name("has_" + columnName);
+			reln.setParent_entity(parentTableName);
+			reln.addChild_column_names(columnName);
 			reln.addParent_column_names("ident");
-			table.addParents(reln);
+			childTable.addParents(reln);
 
 		}
 		ObjectMapper mapper = new ObjectMapper();
@@ -152,6 +173,17 @@ public class SwaggerToSchema {
 		}
 		//System.out.println(outJson);
 		return outJson;
+	}
+
+	private Table findTable(List<Table> tables, String tableName) {
+		Table table = null;
+		for (Table atable : tables) {
+			if (atable.getEntity().equalsIgnoreCase(tableName)) {
+				table = atable;
+				break;
+			}
+		}
+		return table;
 	}
 
 	private String genSubType(String type) {
