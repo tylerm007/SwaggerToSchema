@@ -14,5 +14,14 @@ public class Schema {
 	public void setTables(List<Table> tables) {
 		this.tables = tables;
 	}
+
+	public boolean hasTableName(String entity) {
+		for(Table table: this.tables){
+			if(table.getEntity().equals(entity)){
+				return true;
+			}
+		}
+		return false;
+	}
 	
 }

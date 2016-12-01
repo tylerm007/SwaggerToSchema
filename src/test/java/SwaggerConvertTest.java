@@ -21,14 +21,18 @@ public class SwaggerConvertTest {
 	}
 
 	private static void test() throws Exception {
+		String content;
 		//... does not work ....generateSchema("http://liveapi.dreamfactory.com/df-swagger-ui/dist/index.html",false);
-		generateSchema("http://petstore.swagger.io/v2/swagger.json", true, 9);
-		generateSchema("https://dev.expressologic.com/rest/default/demo_mysql/v1/@docs", false, 47);
-		generateSchema("https://dev.expressologic.com/rest/default/demo/v1/@docs", false, 26);
-		generateSchema("uber.json", true, 7);
-		generateSchema("http://54.171.250.144/api-docs/customerManagementSwagger.json ", true, 45);
+		// content = generateSchema("http://petstore.swagger.io/v2/swagger.json", true, 8);
+		// content = generateSchema("https://dev.expressologic.com/rest/default/demo_mysql/v1/@docs", false, 45);
+		//generateSchema("https://dev.expressologic.com/rest/default/demo/v1/@docs", false, 26);
+		// content = generateSchema("demoSwagger.json", true, 49);
+		// content = generateSchema("http://54.171.250.144/api-docs/customerManagementSwagger.json ", true, 28);
+		//content = generateSchema("http://localhost:8080/APIServer/rest/default/demo_mysql/v1/@docs", true, 59);
+		content = generateSchema("http://localhost:8080/APIServer/rest/default/demo/v1/@docs", true, 34);
 		//generateSchema("//Users/banty01/swagger.json",true);
-		generateSchema("http://devdocs.magento.com/swagger/schemas/latest-2.1.schema.json", true, 265);
+		//generateSchema("http://devdocs.magento.com/swagger/schemas/latest-2.1.schema.json", true, 172);
+		s2schema.writeToFile("/Users/banty01/Downloads/schema.json", content);
 
 	}
 

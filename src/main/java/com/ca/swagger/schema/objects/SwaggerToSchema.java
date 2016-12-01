@@ -61,8 +61,9 @@ public class SwaggerToSchema {
 		Swagger swagger = new SwaggerParser().read(swaggerDoc);
 		List<String> myPathList = getValidPathList(swagger);
 		Map<String, Model> map = swagger.getDefinitions();
-		for (String entityKey : map.keySet()) {
-			Model m = map.get(entityKey);
+		for (String entityName : map.keySet()) {
+			Model m = map.get(entityName);
+			String entityKey = findBaseTable(entityName);
 			Map<String, Property> prop = m.getProperties();
 			if (prop != null) {
 				if (myPathList.contains(entityKey) || genericSwagger) {
@@ -71,9 +72,8 @@ public class SwaggerToSchema {
 					table.addKey(key);
 					key.addColumn("ident");
 					table.setEntity(entityKey);
-					schema.getTables().add(table);
+					
 					List<Attribute> columns = table.getColumns();
-					columns.add(createIdentColumn());
 					String subtype = null;
 					for (String propKey : prop.keySet()) {
 						Property p = prop.get(propKey);
@@ -102,12 +102,18 @@ public class SwaggerToSchema {
 							if (subtype != null) {
 								attr.setSubtype(subtype);
 							}
+							if(columns.isEmpty()) {
+								columns.add(createIdentColumn());
+							}
 							columns.add(attr);
 						}
 					}
 
 					table.setColumns(columns);
 					table.addPrimaryKeyColumns("ident");
+					if(!columns.isEmpty() && !schema.hasTableName(table.getEntity())) {
+						schema.getTables().add(table);
+					}
 				}
 			}
 		}
@@ -126,14 +132,15 @@ public class SwaggerToSchema {
 			if (isRefType) {
 				childTable = findTable(listOfTables, baseEntity);
 				parentTable = findTable(listOfTables, refEntity);
-				parentTableName = refEntity;
-			} else {
+				parentTableName = findBaseTable(refEntity);
+			}
+			else {
 				childTable = findTable(listOfTables, refEntity);
 				parentTable = findTable(listOfTables, baseEntity);
 				parentTableName = baseEntity;
 			}
 
-			if (childTable == null) {
+			if (childTable == null && !schema.hasTableName(RELN_CHILD_PREFIX + columnName)) {
 				childTable = new Table();
 				schema.getTables().add(childTable);
 				Key key = new Key();
@@ -142,23 +149,35 @@ public class SwaggerToSchema {
 				childTable.addPrimaryKeyColumns("ident");
 				childTable.getColumns().add(createIdentColumn());
 				childTable.setEntity(RELN_CHILD_PREFIX + columnName);
+			} else {
+				if(schema.hasTableName(RELN_CHILD_PREFIX + columnName)){
+					for(Table t :schema.getTables()){
+						if(t.getEntity().equals(RELN_CHILD_PREFIX + columnName)){
+							childTable = t;
+							break;
+						}
+					}
+				}
 			}
-			//add the attribute t the table
-			Attribute attr = new Attribute();
-			attr.setName(columnName);
-			attr.setGeneric_type("string");
-			//attr.setSubtype("integer");
-			attr.setNullable(false);
-			attr.setSize(20);
-			childTable.getColumns().add(attr);
-
+			if (isRefType) {
+				//add the attribute t the table
+				Attribute attr = new Attribute();
+				attr.setName(columnName);
+				attr.setGeneric_type("number");
+				attr.setSubtype("integer");
+				attr.setNullable(false);
+				//attr.setSize(20);
+				childTable.getColumns().add(attr);
+			}
 			//create the relationship to the child
 			reln = new Relationship();
 			reln.setRelationship_name("has_" + columnName);
 			reln.setParent_entity(parentTableName);
 			reln.addChild_column_names(columnName);
 			reln.addParent_column_names("ident");
-			childTable.addParents(reln);
+			if(!childTable.hasExistingReln(reln)){
+				childTable.addParents(reln);
+			}
 
 		}
 		ObjectMapper mapper = new ObjectMapper();
@@ -173,6 +192,18 @@ public class SwaggerToSchema {
 		}
 		//System.out.println(outJson);
 		return outJson;
+	}
+
+	private String findBaseTable(String entityKey) {
+		if(entityKey.contains(".")){
+			String[] key = entityKey.split("\\.");
+			return key[key.length - 1];
+		}
+		if(entityKey.contains(":")){
+			String[] key = entityKey.split("\\:");
+			return key[key.length - 1];
+		}
+		return entityKey;
 	}
 
 	private Table findTable(List<Table> tables, String tableName) {

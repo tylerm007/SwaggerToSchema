@@ -77,4 +77,12 @@ public class Table {
 		keys.add(akey);
 	}
 
+	public boolean hasExistingReln(Relationship reln) {
+		for(Relationship areln : parents){
+			if(areln.getParent_entity().equals(reln.getParent_entity()))
+				return true;
+		}
+		return false;
+	}
+
 }
