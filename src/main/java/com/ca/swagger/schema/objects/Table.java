@@ -27,8 +27,8 @@ public class Table {
 	 */
 	private String clean(String value) {
 		int idx = value.indexOf(":");
-		if(idx > 0){
-			return value.substring(idx + 1); 
+		if (idx > 0) {
+			return value.substring(idx + 1);
 		}
 		return value;
 	}
@@ -52,7 +52,7 @@ public class Table {
 	public void addParents(Relationship reln) {
 		this.parents.add(reln);
 	}
-	
+
 	public void addPrimaryKeyColumns(String columnName) {
 		this.primaryKeyColumns.add(columnName);
 	}
@@ -72,15 +72,24 @@ public class Table {
 	public void setKeys(List<Key> keys) {
 		this.keys = keys;
 	}
-	
-	public void addKey(Key akey){
+
+	public void addKey(Key akey) {
 		keys.add(akey);
 	}
 
 	public boolean hasExistingReln(Relationship reln) {
-		for(Relationship areln : parents){
-			if(areln.getParent_entity().equals(reln.getParent_entity()))
+		for (Relationship areln : parents) {
+			if (areln.getParent_entity().equalsIgnoreCase(reln.getParent_entity()))
 				return true;
+		}
+		return false;
+	}
+
+	public boolean hasAttr(Attribute attr) {
+		for (Attribute atr : this.columns) {
+			if (atr.getName().equalsIgnoreCase(attr.getName())) {
+				return true;
+			}
 		}
 		return false;
 	}

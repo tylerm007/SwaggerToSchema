@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,7 +104,9 @@ public class SwaggerToSchema {
 							if(columns.isEmpty()) {
 								columns.add(createIdentColumn());
 							}
-							columns.add(attr);
+							if (!table.hasAttr(attr) && !p.getType().equalsIgnoreCase("object")){
+								columns.add(attr);
+							}
 						}
 					}
 
@@ -167,7 +168,9 @@ public class SwaggerToSchema {
 				attr.setSubtype("integer");
 				attr.setNullable(false);
 				//attr.setSize(20);
-				childTable.getColumns().add(attr);
+				if (!childTable.hasAttr(attr)){
+					childTable.getColumns().add(attr);
+				}
 			}
 			//create the relationship to the child
 			reln = new Relationship();

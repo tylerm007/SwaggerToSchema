@@ -17,7 +17,7 @@ public class Schema {
 
 	public boolean hasTableName(String entity) {
 		for(Table table: this.tables){
-			if(table.getEntity().equals(entity)){
+			if(table.getEntity().equalsIgnoreCase(entity)){
 				return true;
 			}
 		}
